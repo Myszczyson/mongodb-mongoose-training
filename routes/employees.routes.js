@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Employee = require('../models/employees.model');
+const Department = require('../models/department.model');
 
 router.get('/employees', async (req, res) => {
   try {
@@ -44,9 +45,21 @@ router.post('/employees', async (req, res) => {
 try {
 
   const { firstName, lastName, department } = req.body;
+  let empDepartment;
+  
+  try {
+  empDepartment = await Department.findById( department )
+  } finally {
+    if(!empDepartment){
+      res.status(404).json({ message: 'Department not found...' });
+      return
+    }
+  }
+
   const newEmployee = new Employee({ firstName: firstName, lastName: lastName, department: department });
   await newEmployee.save();
-  res.json(newEmployee);
+  const emp = await Employee.findById(newEmployee.id).populate('department');
+  res.json(emp);
 
 } catch(err) {
   res.status(500).json({ message: err });
@@ -56,6 +69,17 @@ try {
 
 router.put('/employees/:id', async (req, res) => {
   const { firstName, lastName, department } = req.body;
+
+  let empDepartment;
+  
+  try {
+  empDepartment = await Department.findById( department )
+  } finally {
+    if(!empDepartment){
+      res.status(404).json({ message: 'Department not found...' });
+      return
+    }
+  }
 
   try {
     const emp = await Employee.findById(req.params.id)
