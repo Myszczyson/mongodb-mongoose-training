@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "mocha": "^9.1.0",
     "mongodb": "^4.1.0",
-    "mongoose": "^5.13.7",
+    "mongoose": "^6.0.4",
     "nodemon": "^1.19.1",
     "onchange": "6.1.0"
   }
